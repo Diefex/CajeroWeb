@@ -1,4 +1,4 @@
-//Clase screen----------------------------------------------
+4//Clase screen----------------------------------------------
 class Screen {
     constructor() {
         this.titulo = document.getElementById('titulo');
@@ -19,25 +19,16 @@ class Screen {
     printForm(texto, boton, accion) {
         this.hold.innerHTML = `
         <div class="container text-center">
-            <form" class="my-md-5">
+            <form" class="my-md-5" id="form">
                 <h2 class="py-md-5">${texto}</h2>
                 <input id="input" type="text" class="form-control">
-                <button id="btn" type="button" class="btn btn-success my-md-5">${boton}</button>
-            </form>
-        </div>`;
-        document.getElementById('btn').addEventListener('click', accion);
-    }
-
-    printFormPass(texto, boton) {
-        this.hold.innerHTML = `
-        <div class="container text-center">
-            <form id="form" "class="my-md-5">
-                <h2 class="py-md-5">${texto}</h2>
-                <input name="contra" type="password" class="form-control">
                 <button id="btn" type="submit" class="btn btn-success my-md-5">${boton}</button>
             </form>
         </div>`;
+        //document.getElementById('btn').addEventListener('click', accion);
     }
+
+
 }
 //Clase Opcion------------------------------------------------
 class Opcion {
@@ -85,63 +76,101 @@ class OpcionFactory {
 }
 
 //Funciones de Verificacion----------------------------
-function Validar(accion) {
-    pantalla.printFormPass("Ingrese su Clave", "Ingresar");
-    var form = document.getElementById('form');
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        fetch('logica/Verificador.php', {
-            method: 'POST',
-            body: new FormData(form)
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(ok => {
-                if(ok){
-                    accion();
-                }else{
-                    pantalla.print("Contraseña incorrecta");
-                }
-            });
-    })
-}
+// function Validar(accion) {
+//     pantalla.printFormPass("Ingrese su Clave", "Ingresar");
+//     var form = document.getElementById('form');
+//     form.addEventListener('submit', function (e) {
+//         e.preventDefault();
+//         fetch('logica/Verificador.php', {
+//             method: 'POST',
+//             body: new FormData(form)
+//         })
+//             .then(response => {
+//                 return response.json();
+//             })
+//             .then(ok => {
+//                 if(ok){
+//                     accion();
+//                 }else{
+//                     pantalla.print("Contraseña incorrecta");
+//                 }
+//             });
+//     })
+// }
 
 //fucniones de Retiro-----------------------------------------------
-function Retiro() {
-    this.valor = 0;
-    pantalla.setTitulo("Seleccione la cantidad a retirar");
-    //Opciones
-    var opf = new OpcionFactory();
-    opf.newOpcion("retirarValor(10000)", "10000");
-    opf.newOpcion("retirarValor(50000)", "50000");
-    opf.newOpcion("retirarValor(100000)", "100000");
-    opf.newOpcion("retirarValor(500000)", "500000");
-    opf.newOpcion("retirarValor(1000000)", "1000000");
-    opf.newOpcion("ingresarValor", "Otro Valor");
-    opf.opcionSalir();
-}
+// function Retiro() {
+//     this.valor = 0;
+//     pantalla.setTitulo("Seleccione la cantidad a retirar");
+//     //Opciones
+//     var opf = new OpcionFactory();
+//     opf.newOpcion("retirarValor(10000)", "10000");
+//     opf.newOpcion("retirarValor(50000)", "50000");
+//     opf.newOpcion("retirarValor(100000)", "100000");
+//     opf.newOpcion("retirarValor(500000)", "500000");
+//     opf.newOpcion("retirarValor(1000000)", "1000000");
+//     opf.newOpcion("ingresarValor", "Otro Valor");
+//     opf.opcionSalir();
+// }
 
-function ingresarValor() {
-    pantalla.printForm("Ingrese la Cantidad a Retirar", "retirar", function () {
-        retirarValor(document.getElementById('input').value);
-    });
-}
+// function ingresarValor() {
+//     pantalla.printForm("Ingrese la Cantidad a Retirar", "retirar", function () {
+//         retirarValor(document.getElementById('input').value);
+//     });
+// }
 
-function retirarValor(valor) {
+// function retirarValor(valor) {
 
-    pantalla.print("Retirando $" + valor + "<br> Por favor tome su dinero");
+//     pantalla.print("Retirando $" + valor + "<br> Por favor tome su dinero");
 
-}
+// }
 
 //------------------------------------------------------------------
-function Consulta() {
-    
+function Consulta() { 
+}
+function Transferencia() {
+    this.valor = 0;
+    pantalla.printForm("Indique la cuenta destino","Aceptar",null);
+
+    var formulario =document.getElementById('form');
+    formulario.addEventListener('submit',function(e){
+        console.log("entroooo");
+       
+        e.preventDefault();
+        var datos =new FormData (formulario);
+
+        fetch('ValidarCuenta.php',{
+            method:'POST',
+            body:datos
+        })
+            .then(res=>res.json())
+            .then(data =>{
+                console.log(data)
+            })
+    });
  }
-function Bloqueo() { }
-function Transferencia() { }
-function Recarga() { }
-function Pago() { }
+
+//  function ingresarMonto(numcuenta){
+
+//     var data =document.getElementById('form');
+//     var datos= new FormData(document.getElementById('form'));
+
+//      var metodo={method: 'POST',
+//                 body: data};
+//     fetch('ValidarCuenta.php',metodo)
+//     .then(function(response){
+//         var validado=response.json()
+//     })
+//     .then(function (validado){
+//         if(validado){
+//             console.log("Esta cuenta existe");
+//         }
+//         else{
+//             console.log("Esta cuenta no existe");
+//         }
+//     })
+//  } 
+
 //Salir------------------------------------------------------------
 function Salir() {
     window.location="Login.php";
