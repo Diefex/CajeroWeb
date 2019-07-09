@@ -21,7 +21,7 @@
     </div>
     <!--Formulario Login-->
     <div class="container p-md-5 rounded-lg shadow bg-dark text-light">
-        <form action="../logica/validaringreso.php" method="POST">
+        <form action="../logica/Validaciones.php?validacion=Ingreso" method="POST">
             <div class="form-group">
                 <label for="NumTarjeta">Numero de Tarjeta</label>
                 <input class="form-control" id="NumTarjeta" placeholder="Ingrese su numero de Tarjeta" autocomplete="off" name="numtarjeta">
@@ -33,19 +33,6 @@
             </div>
             <button type="submit" class="btn btn-success">Ingresar</button>
         </form>
-    </div>
-    <!-- Separador-->
-    <div class="container-fluid text-center my-md-5">
-        <h3>
-            ó si lo prefiere
-        </h3>
-    </div>
-    <!-- Ingresar Tarjeta-->
-    <div class="container my-md-5 p-md-5 rounded-lg shadow bg-dark text-light">
-        <h3 class="text-center my-md-3">Ingrese su tarjeta</h3>
-        <div class="container mx-auto text-center">
-            <button class="btn btn-success">Ingresar Tarjeta</button>
-        </div>
     </div>
 </body>
 </html>

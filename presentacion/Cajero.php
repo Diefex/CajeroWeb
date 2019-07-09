@@ -1,4 +1,5 @@
 <?php
+//$cuenta = $_POST['cuenta'];
 $op = 0;
 $btn = 0;
 ?>
