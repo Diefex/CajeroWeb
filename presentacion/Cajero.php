@@ -1,5 +1,5 @@
 <?php
-//$cuenta = $_POST['cuenta'];
+$numTarjeta = $_GET['numTarjeta'];
 $op = 0;
 $btn = 0;
 ?>
@@ -90,5 +90,11 @@ $btn = 0;
     </div>
 
     <script src="pantalla.js"></script>
+    <?php
+    echo "<script>\n";
+    echo "var numTarjeta=".$numTarjeta."\n";
+    echo "</script>\n";
+    ?>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </body>
 </html>

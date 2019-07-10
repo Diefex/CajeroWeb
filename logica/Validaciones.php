@@ -40,7 +40,7 @@ EOF;
             $ret = $db->query($sql);
             $row = $ret->fetchArray(SQLITE3_ASSOC);
             if ($contrasena == $row['CONTRASENA']) {
-                header('Location: ../presentacion/cajero.php');
+                header('Location: ../presentacion/cajero.php?numTarjeta='.$numTarjeta);
             } else {
                 echo "Usuario o contraseña incorrectos";
             }

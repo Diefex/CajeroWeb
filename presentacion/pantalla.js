@@ -95,9 +95,31 @@ function Retiro() {
 
 function retirarValor(valor) {
 
-    pantalla.print("Retirando $" + valor + " de la cuenta"+cuenta+"<br> Por favor tome su dinero");
+    pantalla.print("Retirando $" + valor + " de la cuenta"+numTarjeta+"<br> Por favor tome su dinero"); 
 
+    var dato = $(this).serializeArray();
+    dato.push({name: 'val',value: valor},{name: 'num', value: numTarjeta});
+
+    $.ajax({
+        url: '../Logica/Retiro.php',
+        type: 'post',
+        dataType: 'json',
+        data: dato
+    })
+    .done(function(){
+        console.log("Todo bien");
+    })
+    .fail(function(){
+        console.log("Casi bien");
+    })
+    .always(function(){
+        console.log("Si funciona");
+    });
+
+    
 }
+
+
 
 //------------------------------------------------------------------
 function Consulta() { 
@@ -114,7 +136,7 @@ function Transferencia() {
             .then(res=>res.json())
             .then(validado =>{
                 if(validado){
-                    this.destino = document.getElementById('input').value;
+                    destino = document.getElementById('input').value;
                     pantalla.ingresarValor(transferirValor);
                 } else {
                     pantalla.print("Esta Cuenta No Existe");
@@ -134,7 +156,7 @@ function Salir() {
 }
 //main-------------------------------------------------------------
 var pantalla = new Screen();
-var cuenta;
+//var numTarjeta = "<?php echo $numTarjeta; ?>";
 var destino;
 
 init();
