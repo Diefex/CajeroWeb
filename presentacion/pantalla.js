@@ -30,7 +30,15 @@ class Screen {
     }
 
     ingresarValor(accion){
-        this.printForm("Ingrese el Valor", function(){accion(document.getElementById('input').value)});
+        this.hold.innerHTML = `
+        <div class="container text-center">
+            <form class="my-md-5" id="form">
+                <h2 class="py-md-5">Ingrese el Valor</h2>
+                <input id="input" name="input" type="text" class="form-control" autocomplete="off">
+                <button id="btn" type="button" class="btn btn-success my-md-5">Ingresar</button>
+            </form>
+        </div>`;
+        document.getElementById('btn').addEventListener('click',function(){accion(document.getElementById('input').value)});
     }
 
 }
@@ -95,35 +103,88 @@ function Retiro() {
 
 function retirarValor(valor) {
 
-    pantalla.print("Retirando $" + valor + " de la cuenta"+numTarjeta+"<br> Por favor tome su dinero"); 
-
     var dato = $(this).serializeArray();
-    dato.push({name: 'val',value: valor},{name: 'num', value: numTarjeta});
+    dato.push({name: 'transaccion', value:'Retiro'},{name: 'val',value: valor},{name: 'num', value: numTarjeta});
 
     $.ajax({
-        url: '../Logica/Retiro.php',
+        url: '../Logica/Transacciones.php',
         type: 'post',
         dataType: 'json',
         data: dato
     })
     .done(function(){
-        console.log("Todo bien");
+        console.log("Transaccion Realizada");
     })
     .fail(function(){
-        console.log("Casi bien");
+        console.log("Transaccion Rechazada");
     })
-    .always(function(){
-        console.log("Si funciona");
+    .always(function(res){
+        if(res == 'NoMoney'){
+            console.log("no hay dinero");
+            pantalla.print("Usted no dispone de fondos suficientes para esta transaccion"); 
+        } else if (res == 'Success') {
+            pantalla.print("Retirando $" + valor + "<br> Por favor tome su dinero"); 
+        }
     });
-
     
 }
 
-
-
 //------------------------------------------------------------------
 function Consulta() { 
+    pantalla.setTitulo('Seleccione su consulta');
+    //opciones
+    var opf = new OpcionFactory();
+    opf.newOpcion("consultaSaldo()","Consultar Saldo");
+    opf.newOpcion("consultaMovimientos()","Consultar Movimientos Recientes");
+    opf.newOpcion("consultaDatos()","Consultar sus Datos");
 }
+
+function consultaSaldo() {
+    var dato = $(this).serializeArray();
+    dato.push({name: 'transaccion', value:'ConsultaSaldo'},{name: 'num', value: numTarjeta});
+
+    $.ajax({
+        url: '../Logica/Transacciones.php',
+        type: 'post',
+        dataType: 'json',
+        data: dato
+    })
+    .always(function(saldo){
+        pantalla.print("Su saldo actual es: <br> $"+saldo);
+    })
+}
+
+function consultaDatos() {
+    var dato = $(this).serializeArray();
+    dato.push({name: 'transaccion', value:'ConsultaDatos'},{name: 'num', value: numTarjeta});
+
+    $.ajax({
+        url: '../Logica/Transacciones.php',
+        type: 'post',
+        dataType: 'json',
+        data: dato
+    })
+    .always(function(datos){
+        pantalla.print(datos);
+    })
+}
+
+function consultaMovimientos(){
+    var dato = $(this).serializeArray();
+    dato.push({name: 'transaccion', value:'ConsultaMovimientos'},{name: 'num', value: numTarjeta});
+
+    $.ajax({
+        url: '../Logica/Transacciones.php',
+        type: 'post',
+        dataType: 'json',
+        data: dato
+    })
+    .always(function(datos){
+        pantalla.print(datos);
+    })
+}
+
+//Funciones de Consulta---------------------------------------------
 function Transferencia() {
     pantalla.printForm("Indique la cuenta destino", function(e){
         e.preventDefault();
@@ -147,7 +208,29 @@ function Transferencia() {
  }
 
  function transferirValor (valor){
-    pantalla.print("Transfiriendo "+valor+" a la cuenta "+destino);
+    var dato = $(this).serializeArray();
+    dato.push({name: 'transaccion', value:'Transferencia'},{name: 'val',value: valor},{name: 'num', value: numTarjeta},{name: 'dest', value: destino});
+
+    $.ajax({
+        url: '../Logica/Transacciones.php',
+        type: 'post',
+        dataType: 'json',
+        data: dato
+    })
+    .done(function(){
+        console.log("Transaccion Realizada");
+    })
+    .fail(function(){
+        console.log("Transaccion Rechazada");
+    })
+    .always(function(res){
+        if(res == 'NoMoney'){
+            console.log("no hay dinero");
+            pantalla.print("Usted no dispone de fondos suficientes para esta transaccion"); 
+        } else if (res == 'Success') {
+            pantalla.print("Transfiriendo $" + valor + " a la cuenta "+destino); 
+        }
+    });
  }
 
 //Salir------------------------------------------------------------
@@ -156,7 +239,6 @@ function Salir() {
 }
 //main-------------------------------------------------------------
 var pantalla = new Screen();
-//var numTarjeta = "<?php echo $numTarjeta; ?>";
 var destino;
 
 init();
